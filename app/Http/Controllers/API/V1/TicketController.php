@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Http\Requests\Ticket\TicketIndexRequest;
 use App\Http\Requests\Ticket\TicketStoreRequest;
 use App\Http\Requests\Ticket\TicketUpdateRequest;
+use App\Http\Resources\TicketCollection;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
 use App\Services\TicketService;
@@ -25,11 +27,12 @@ class TicketController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(TicketIndexRequest $request): JsonResponse
     {
-        $tickets = $this->ticketService->all();
+        $ticketIndexDto = $request->getDto();
+        $tickets = $this->ticketService->getFilteredTickets($ticketIndexDto);
 
-        return $this->sendResponse(TicketResource::collection($tickets), 'Tickets retrieved successfully.');
+        return $this->sendResponse(new TicketCollection($tickets), 'Tickets retrieved successfully.');
     }
 
     /**

@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Dto\Ticket\TicketIndexDto;
 use App\Repositories\TicketRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TicketService extends BaseService
 {
@@ -14,5 +16,13 @@ class TicketService extends BaseService
     public function __construct(TicketRepository $repo)
     {
         $this->repo = $repo;
+    }
+
+    /**
+     * Get filtered and paginated tickets.
+     */
+    public function getFilteredTickets(TicketIndexDto $ticketIndexDto): LengthAwarePaginator
+    {
+        return $this->repo->getFilteredTickets($ticketIndexDto);
     }
 }

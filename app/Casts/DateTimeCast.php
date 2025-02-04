@@ -13,7 +13,7 @@ class DateTimeCast implements CastsAttributes
      *
      * @param  array<string, mixed>  $attributes
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): mixed
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?string
     {
         return $value ? Carbon::parse($value)->format('Y-m-d H:i:s') : null;
     }
