@@ -2,22 +2,23 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Casts\DateTimeCast;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use MongoDB\Laravel\Auth\User as Authenticatable;
+use MongoDB\Laravel\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+class Ticket extends Model
 {
-    /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, SoftDeletes;
 
-    protected $connection = 'mongodb';
+    public bool $timestamp = true;
 
-    protected $table = 'users';
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'tickets';
 
     /**
      * The attributes that are mass assignable.
@@ -25,19 +26,25 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'title', 'description', 'status',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'deleted_at',
+    ];
+
+    /**
+     * The attributes that should be set to default values when a new model is created.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'status' => 'open',
     ];
 
     /**
@@ -48,10 +55,9 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => DateTimeCast::class,
             'created_at' => DateTimeCast::class,
             'updated_at' => DateTimeCast::class,
-            'password' => 'hashed',
+            'deleted_at' => DateTimeCast::class,
         ];
     }
 }

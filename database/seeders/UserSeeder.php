@@ -1,0 +1,36 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+class UserSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // Default users
+        $users = [
+            [
+                'name' => 'Admin',
+                'email' => 'admin@example.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('password'),
+                'remember_token' => Str::random(10),
+            ],
+        ];
+        foreach ($users as $userData) {
+            User::create($userData);
+        }
+
+        // Create additional users
+        User::factory()
+            ->count(10)
+            ->create();
+    }
+}
