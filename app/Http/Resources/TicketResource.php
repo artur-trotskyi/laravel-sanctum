@@ -12,6 +12,18 @@ class TicketResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+    /**
+     * @OA\Schema(
+     *     schema="TicketResource",
+     *     type="object",
+     *
+     *     @OA\Property(property="id", type="string", example="67a1e91c72dcd8a4290695a6"),
+     *     @OA\Property(property="title", type="string", example="Issue with login"),
+     *     @OA\Property(property="status", type="string", enum={"open", "in_progress", "closed"}, example="open"),
+     *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-02-04 12:00"),
+     *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-02-04 12:00")
+     * )
+     */
     public function toArray(Request $request): array
     {
         return [
