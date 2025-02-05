@@ -83,6 +83,10 @@ class SanctumAuthController extends BaseController
         $user = User::create($registerValidatedData);
         Auth::login($user);
 
+        // TODO: fix it
+        $user->createdAt = $user->created_at->toDateTime()->format('Y-m-d H:i:s');
+        $user->updatedAt = $user->updated_at->toDateTime()->format('Y-m-d H:i:s');
+
         $data = [
             'token' => $user->createToken(config('app.name'))->plainTextToken,
             'user' => $user,

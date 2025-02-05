@@ -25,6 +25,10 @@ class DateTimeCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
+        /*if ($value instanceof UTCDateTime) {
+            return $value->toDateTime()->format('Y-m-d H:i:s');
+        }*/
+
         return $value;
     }
 }
