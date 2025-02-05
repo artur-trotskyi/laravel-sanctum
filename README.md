@@ -85,5 +85,6 @@ Add the following line:
 ```
 
 ### 11. Access API Documentation
-You can now use the API documentation. See the [`api-docs.json`](storage/api-docs/api-docs.json) file and start testing API requests. 🚀
+You can now use the API documentation. See the [`api-docs.json`](storage/api-docs/api-docs.json) file and start testing API requests.
+Swagger UI will be available at http://your-api-project.test/api/documentation. Replace your-api-project.test with your local development domain http://rocket9.local/api/documentation . 🚀
 

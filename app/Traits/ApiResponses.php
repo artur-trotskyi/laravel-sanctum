@@ -3,15 +3,16 @@
 namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 trait ApiResponses
 {
     protected function ok(string $message, array $data = []): JsonResponse
     {
-        return $this->success($message, $data, 200);
+        return $this->success($message, $data, Response::HTTP_OK);
     }
 
-    protected function success(string $message, array $data = [], ?int $statusCode = 200): JsonResponse
+    protected function success(string $message, array $data = [], ?int $statusCode = Response::HTTP_OK): JsonResponse
     {
         return response()->json([
             'data' => $data,
@@ -20,7 +21,7 @@ trait ApiResponses
         ], $statusCode);
     }
 
-    protected function error(string|array $errors = [], ?int $statusCode = null): JsonResponse
+    protected function error(string|array $errors, int $statusCode): JsonResponse
     {
         if (is_string($errors)) {
             return response()->json([
@@ -31,15 +32,15 @@ trait ApiResponses
 
         return response()->json([
             'errors' => $errors,
-        ]);
+        ], $statusCode);
     }
 
     protected function notAuthorized(string $message): JsonResponse
     {
         return $this->error([
-            'status' => 401,
+            'status' => Response::HTTP_UNAUTHORIZED,
             'message' => $message,
             'source' => '',
-        ]);
+        ], Response::HTTP_UNAUTHORIZED);
     }
 }
