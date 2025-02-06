@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use App\Casts\DateTimeCast;
+use App\Enums\Ticket\TicketStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use MongoDB\Laravel\Eloquent\Model;
 use MongoDB\Laravel\Eloquent\SoftDeletes;
+use MongoDB\Laravel\Relations\BelongsTo as MongoBelongsTo;
 
 class Ticket extends Model
 {
@@ -44,7 +47,7 @@ class Ticket extends Model
      * @var array<string, mixed>
      */
     protected $attributes = [
-        'status' => 'open',
+        'status' => TicketStatusEnum::Open,
     ];
 
     /**
@@ -59,5 +62,17 @@ class Ticket extends Model
             'updated_at' => DateTimeCast::class,
             'deleted_at' => DateTimeCast::class,
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (Ticket $ticket) {
+            $ticket->user_id = $ticket->user_id ?: auth()->id();
+        });
+    }
+
+    public function user(): BelongsTo|MongoBelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

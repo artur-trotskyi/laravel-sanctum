@@ -19,7 +19,12 @@ class TicketCollection extends ResourceCollection
      *     type="object",
      *
      *     @OA\Property(
-     *         property="items",
+     *         property="success",
+     *         type="boolean",
+     *         example=true
+     *     ),
+     *     @OA\Property(
+     *         property="data",
      *         type="array",
      *
      *         @OA\Items(ref="#/components/schemas/TicketResource")
@@ -42,6 +47,11 @@ class TicketCollection extends ResourceCollection
      *         @OA\Property(property="last", type="string", format="uri", example="https://api.example.com/api/v1/tickets?page=5"),
      *         @OA\Property(property="prev", type="string", format="uri", nullable=true, example="https://api.example.com/api/v1/tickets?page=1"),
      *         @OA\Property(property="next", type="string", format="uri", nullable=true, example="https://api.example.com/api/v1/tickets?page=3")
+     *     ),
+     *     @OA\Property(
+     *         property="message",
+     *         type="string",
+     *         example="Tickets retrieved successfully."
      *     )
      * )
      */

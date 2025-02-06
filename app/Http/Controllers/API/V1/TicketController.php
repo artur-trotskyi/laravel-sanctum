@@ -10,6 +10,7 @@ use App\Http\Resources\Ticket\TicketResource;
 use App\Models\Ticket;
 use App\Services\TicketService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * @OA\Info(
@@ -102,40 +103,35 @@ class TicketController extends BaseController
      *         @OA\JsonContent(
      *             type="object",
      *
+     *             @OA\Property(property="success", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
      *             @OA\Property(
-     *                 property="items",
-     *                 type="array",
-     *
-     *                 @OA\Items(ref="#/components/schemas/TicketResource")
-     *             ),
-     *
-     *             @OA\Property(
-     *                 property="meta",
+     *                 property="data",
      *                 type="object",
-     *                 @OA\Property(property="currentPage", type="integer"),
-     *                 @OA\Property(property="lastPage", type="integer"),
-     *                 @OA\Property(property="perPage", type="integer"),
-     *                 @OA\Property(property="total", type="integer")
-     *             ),
-     *             @OA\Property(
-     *                 property="links",
-     *                 type="object",
-     *                 @OA\Property(property="first", type="string"),
-     *                 @OA\Property(property="last", type="string"),
-     *                 @OA\Property(property="prev", type="string"),
-     *                 @OA\Property(property="next", type="string")
+     *                 @OA\Property(
+     *                     property="items",
+     *                     type="array",
+     *
+     *                     @OA\Items(ref="#/components/schemas/TicketResource")
+     *                 ),
+     *
+     *                 @OA\Property(
+     *                     property="meta",
+     *                     type="object",
+     *                     @OA\Property(property="currentPage", type="integer"),
+     *                     @OA\Property(property="lastPage", type="integer"),
+     *                     @OA\Property(property="perPage", type="integer"),
+     *                     @OA\Property(property="total", type="integer")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="links",
+     *                     type="object",
+     *                     @OA\Property(property="first", type="string"),
+     *                     @OA\Property(property="last", type="string"),
+     *                     @OA\Property(property="prev", type="string", nullable=true),
+     *                     @OA\Property(property="next", type="string", nullable=true)
+     *                 )
      *             )
-     *         )
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid parameters",
-     *
-     *         @OA\JsonContent(
-     *             type="object",
-     *
-     *             @OA\Property(property="message", type="string")
      *         )
      *     ),
      *
@@ -146,18 +142,34 @@ class TicketController extends BaseController
      *         @OA\JsonContent(
      *             type="object",
      *
-     *             @OA\Property(property="message", type="string")
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *
+     *                     @OA\Property(property="status", type="integer"),
+     *                     @OA\Property(property="message", type="string"),
+     *                     @OA\Property(property="source", type="string")
+     *                 )
+     *             )
      *         )
      *     ),
      *
      *     @OA\Response(
-     *         response=500,
-     *         description="Internal server error",
+     *         response=422,
+     *         description="Validation Error",
      *
      *         @OA\JsonContent(
      *             type="object",
      *
-     *             @OA\Property(property="message", type="string")
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *
+     *                     @OA\Property(property="status", type="integer"),
+     *                     @OA\Property(property="message", type="string"),
+     *                     @OA\Property(property="source", type="string")
+     *                 )
+     *             )
      *         )
      *     )
      * )
@@ -199,22 +211,47 @@ class TicketController extends BaseController
      *     ),
      *
      *     @OA\Response(
-     *         response=201,
+     *         response=200,
      *         description="Ticket created successfully.",
-     *
-     *         @OA\JsonContent(
-     *             ref="#/components/schemas/TicketResource"
-     *         )
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid input, validation errors",
      *
      *         @OA\JsonContent(
      *             type="object",
      *
-     *             @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Ticket created successfully."),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="status", type="string", example="open"),
+     *                 @OA\Property(property="title", type="string", example="test title"),
+     *                 @OA\Property(property="description", type="string", example="test description"),
+     *                 @OA\Property(property="userId", type="string", example="67a35037e59d0043c407db77"),
+     *                 @OA\Property(property="updatedAt", type="string", format="date-time", example="2025-02-06 08:19:45"),
+     *                 @OA\Property(property="createdAt", type="string", format="date-time", example="2025-02-06 08:19:45"),
+     *                 @OA\Property(property="id", type="string", example="67a470a1e1dd6b072d0bb2fe")
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="array",
+     *
+     *                 @OA\Items(
+     *                     type="object",
+     *
+     *                     @OA\Property(property="status", type="integer", example=422),
+     *                     @OA\Property(property="message", type="string", example="The title field is required."),
+     *                     @OA\Property(property="source", type="string", example="title")
+     *                 )
+     *             )
      *         )
      *     ),
      *
@@ -225,18 +262,18 @@ class TicketController extends BaseController
      *         @OA\JsonContent(
      *             type="object",
      *
-     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
-     *         )
-     *     ),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="array",
      *
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal server error",
+     *                 @OA\Items(
+     *                     type="object",
      *
-     *         @OA\JsonContent(
-     *             type="object",
-     *
-     *             @OA\Property(property="message", type="string", example="Something went wrong.")
+     *                     @OA\Property(property="status", type="integer", example=401),
+     *                     @OA\Property(property="message", type="string", example="Unauthenticated."),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
      *         )
      *     )
      * )
@@ -273,7 +310,57 @@ class TicketController extends BaseController
      *         description="Ticket retrieved successfully.",
      *
      *         @OA\JsonContent(
-     *             ref="#/components/schemas/TicketResource"
+     *             type="object",
+     *
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="status", type="string", example="in_progress"),
+     *                 @OA\Property(property="userId", type="string", example="67a35037e59d0043c407db77"),
+     *                 @OA\Property(property="title", type="string", example="Id suscipit aut a."),
+     *                 @OA\Property(property="description", type="string", example="Temporibus esse atque sed dolorem. Et tempora ut dolores tempore animi aliquam porro. Maxime et fugit numquam aliquam."),
+     *                 @OA\Property(property="updatedAt", type="string", format="datetime", example="2025-02-05 11:49:12"),
+     *                 @OA\Property(property="createdAt", type="string", format="datetime", example="2025-02-05 11:49:12"),
+     *                 @OA\Property(property="id", type="string", example="67a35038e59d0043c407dba0")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Ticket retrieved successfully.")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *
+     *                     @OA\Property(property="status", type="integer", example=401),
+     *                     @OA\Property(property="message", type="string", example="Unauthenticated."),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *
+     *                     @OA\Property(property="status", type="integer", example=403),
+     *                     @OA\Property(property="message", type="string", example="This action is unauthorized."),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
      *         )
      *     ),
      *
@@ -284,25 +371,23 @@ class TicketController extends BaseController
      *         @OA\JsonContent(
      *             type="object",
      *
-     *             @OA\Property(property="message", type="string", example="Ticket not found.")
-     *         )
-     *     ),
+     *             @OA\Property(property="errors", type="array",
      *
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized",
+     *                 @OA\Items(
      *
-     *         @OA\JsonContent(
-     *             type="object",
-     *
-     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *                     @OA\Property(property="status", type="integer", example=404),
+     *                     @OA\Property(property="message", type="string", example="No query results for model [App\\Models\\Ticket] 67a1e91c72dcd8a4290695a6"),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
      *         )
      *     )
      * )
      */
-    public function show(string $id): JsonResponse
+    public function show(Ticket $ticket): JsonResponse
     {
-        $ticket = $this->ticketService->getById($id);
+        Gate::authorize('delete', $ticket);
+        $ticket = $this->ticketService->getById($ticket['id']);
 
         if (is_null($ticket)) {
             return $this->sendError('Ticket not found.');
@@ -332,13 +417,19 @@ class TicketController extends BaseController
      *
      *     @OA\RequestBody(
      *         required=true,
+     *         description="Ticket data to be updated",
      *
-     *         @OA\JsonContent(
-     *             required={"title", "description", "status"},
+     *         @OA\MediaType(
+     *             mediaType="application/json",
      *
-     *             @OA\Property(property="title", type="string", example="Issue with login"),
-     *             @OA\Property(property="description", type="string", example="User cannot log in with valid credentials."),
-     *             @OA\Property(property="status", type="string", enum={"open", "in_progress", "closed"}, example="in_progress")
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"title", "description", "status"},
+     *
+     *                 @OA\Property(property="title", type="string", example="Issue with login"),
+     *                 @OA\Property(property="description", type="string", example="User cannot log in with valid credentials."),
+     *                 @OA\Property(property="status", type="string", enum={"open", "in_progress", "closed"}, example="in_progress")
+     *             )
      *         )
      *     ),
      *
@@ -347,30 +438,21 @@ class TicketController extends BaseController
      *         description="Ticket updated successfully.",
      *
      *         @OA\JsonContent(
-     *             ref="#/components/schemas/TicketResource"
-     *         )
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=400,
-     *         description="Validation error",
-     *
-     *         @OA\JsonContent(
      *             type="object",
      *
-     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
-     *             @OA\Property(property="errors", type="object")
-     *         )
-     *     ),
-     *
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized",
-     *
-     *         @OA\JsonContent(
-     *             type="object",
-     *
-     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Ticket updated successfully."),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="status", type="string", example="closed"),
+     *                 @OA\Property(property="title", type="string", example="test title"),
+     *                 @OA\Property(property="description", type="string", example="test description"),
+     *                 @OA\Property(property="userId", type="string", example="67a35037e59d0043c407db77"),
+     *                 @OA\Property(property="updatedAt", type="string", format="date-time", example="2025-02-06 08:45:45"),
+     *                 @OA\Property(property="createdAt", type="string", format="date-time", example="2025-02-06 08:22:18"),
+     *                 @OA\Property(property="id", type="string", example="67a4713a61af4f3c6707050c")
+     *             )
      *         )
      *     ),
      *
@@ -381,13 +463,83 @@ class TicketController extends BaseController
      *         @OA\JsonContent(
      *             type="object",
      *
-     *             @OA\Property(property="message", type="string", example="Ticket not found.")
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *                     type="object",
+     *
+     *                     @OA\Property(property="status", type="integer", example=404),
+     *                     @OA\Property(property="message", type="string", example="No query results for model [App\\Models\\Ticket] 67a1e91c72dcd8a4290695a2"),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *                     type="object",
+     *
+     *                     @OA\Property(property="status", type="integer", example=401),
+     *                     @OA\Property(property="message", type="string", example="Unauthenticated."),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *                     type="object",
+     *
+     *                     @OA\Property(property="status", type="integer", example=422),
+     *                     @OA\Property(property="message", type="string", example="The title field is required."),
+     *                     @OA\Property(property="source", type="string", example="title")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *                     type="object",
+     *
+     *                     @OA\Property(property="status", type="integer", example=403),
+     *                     @OA\Property(property="message", type="string", example="This action is unauthorized."),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
      *         )
      *     )
      * )
      */
     public function update(TicketUpdateRequest $request, Ticket $ticket): JsonResponse
     {
+        Gate::authorize('update', $ticket);
         $ticketUpdateData = $request->getDtoArray();
         $this->ticketService->update($ticket['id'], $ticketUpdateData);
 
@@ -427,30 +579,69 @@ class TicketController extends BaseController
      *     ),
      *
      *     @OA\Response(
-     *         response=404,
-     *         description="Ticket not found",
-     *
-     *         @OA\JsonContent(
-     *             type="object",
-     *
-     *             @OA\Property(property="message", type="string", example="Ticket not found.")
-     *         )
-     *     ),
-     *
-     *     @OA\Response(
      *         response=401,
      *         description="Unauthorized",
      *
      *         @OA\JsonContent(
      *             type="object",
      *
-     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *                     type="object",
+     *
+     *                     @OA\Property(property="status", type="integer", example=401),
+     *                     @OA\Property(property="message", type="string", example="Unauthenticated."),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *                     type="object",
+     *
+     *                     @OA\Property(property="status", type="integer", example=403),
+     *                     @OA\Property(property="message", type="string", example="This action is unauthorized."),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Ticket not found",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *                     type="object",
+     *
+     *                     @OA\Property(property="status", type="integer", example=404),
+     *                     @OA\Property(property="message", type="string", example="No query results for model [App\\Models\\Ticket] 67a237edaa76b4fa8d028774"),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
      *         )
      *     )
      * )
      */
     public function destroy(Ticket $ticket): JsonResponse
     {
+        Gate::authorize('delete', $ticket);
         $this->ticketService->destroy($ticket['id']);
 
         return $this->sendResponse([], 'Ticket deleted successfully.', 200);

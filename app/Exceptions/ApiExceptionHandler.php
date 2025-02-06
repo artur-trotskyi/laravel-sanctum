@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -32,6 +33,10 @@ class ApiExceptionHandler
 
         if ($e instanceof NotFoundHttpException) {
             return $this->handleNotFoundHttpException($e);
+        }
+
+        if ($e instanceof AccessDeniedHttpException) {
+            return $this->handleAccessDeniedHttpException($e);
         }
 
         return $this->handleGenericException($e);
@@ -84,6 +89,17 @@ class ApiExceptionHandler
                 'source' => '',
             ],
         ], Response::HTTP_NOT_FOUND);
+    }
+
+    protected function handleAccessDeniedHttpException(AccessDeniedHttpException $e): JsonResponse
+    {
+        return $this->error([
+            [
+                'status' => Response::HTTP_FORBIDDEN,
+                'message' => empty($e->getMessage()) ? 'This action is unauthorized.' : $e->getMessage(),
+                'source' => '',
+            ],
+        ], Response::HTTP_FORBIDDEN);
     }
 
     protected function handleGenericException(Throwable $e): JsonResponse

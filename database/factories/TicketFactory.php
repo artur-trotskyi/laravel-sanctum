@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\Ticket\TicketStatusEnum;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,6 +20,7 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => User::raw(fn ($collection) => $collection->aggregate([['$sample' => ['size' => 1]]]))->first()?->id ?? User::factory(),
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
             'status' => $this->faker->randomElement(TicketStatusEnum::cases()),

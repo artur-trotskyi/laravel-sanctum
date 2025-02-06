@@ -96,60 +96,58 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "items": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/TicketResource"
-                                            }
+                                        "success": {
+                                            "type": "boolean"
                                         },
-                                        "meta": {
-                                            "properties": {
-                                                "currentPage": {
-                                                    "type": "integer"
-                                                },
-                                                "lastPage": {
-                                                    "type": "integer"
-                                                },
-                                                "perPage": {
-                                                    "type": "integer"
-                                                },
-                                                "total": {
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "links": {
-                                            "properties": {
-                                                "first": {
-                                                    "type": "string"
-                                                },
-                                                "last": {
-                                                    "type": "string"
-                                                },
-                                                "prev": {
-                                                    "type": "string"
-                                                },
-                                                "next": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid parameters",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
                                         "message": {
                                             "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/TicketResource"
+                                                    }
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "currentPage": {
+                                                            "type": "integer"
+                                                        },
+                                                        "lastPage": {
+                                                            "type": "integer"
+                                                        },
+                                                        "perPage": {
+                                                            "type": "integer"
+                                                        },
+                                                        "total": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "links": {
+                                                    "properties": {
+                                                        "first": {
+                                                            "type": "string"
+                                                        },
+                                                        "last": {
+                                                            "type": "string"
+                                                        },
+                                                        "prev": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        },
+                                                        "next": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -163,8 +161,22 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string"
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer"
+                                                    },
+                                                    "message": {
+                                                        "type": "string"
+                                                    },
+                                                    "source": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -172,14 +184,28 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Internal server error",
+                    "422": {
+                        "description": "Validation Error",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string"
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer"
+                                                    },
+                                                    "message": {
+                                                        "type": "string"
+                                                    },
+                                                    "source": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -235,25 +261,86 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Ticket created successfully.",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TicketResource"
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ticket created successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "open"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "test title"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "test description"
+                                                },
+                                                "userId": {
+                                                    "type": "string",
+                                                    "example": "67a35037e59d0043c407db77"
+                                                },
+                                                "updatedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-06 08:19:45"
+                                                },
+                                                "createdAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-06 08:19:45"
+                                                },
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "67a470a1e1dd6b072d0bb2fe"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
                     },
-                    "400": {
-                        "description": "Invalid input, validation errors",
+                    "422": {
+                        "description": "Validation error",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "The given data was invalid."
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 422
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "The title field is required."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": "title"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -267,25 +354,25 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Something went wrong."
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 401
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Unauthenticated."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -326,7 +413,116 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TicketResource"
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "in_progress"
+                                                },
+                                                "userId": {
+                                                    "type": "string",
+                                                    "example": "67a35037e59d0043c407db77"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Id suscipit aut a."
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Temporibus esse atque sed dolorem. Et tempora ut dolores tempore animi aliquam porro. Maxime et fugit numquam aliquam."
+                                                },
+                                                "updatedAt": {
+                                                    "type": "string",
+                                                    "format": "datetime",
+                                                    "example": "2025-02-05 11:49:12"
+                                                },
+                                                "createdAt": {
+                                                    "type": "string",
+                                                    "format": "datetime",
+                                                    "example": "2025-02-05 11:49:12"
+                                                },
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "67a35038e59d0043c407dba0"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ticket retrieved successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 401
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Unauthenticated."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 403
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "This action is unauthorized."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -337,25 +533,25 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Ticket not found."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 404
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "No query results for model [App\\\\Models\\\\Ticket] 67a1e91c72dcd8a4290695a6"
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -389,6 +585,7 @@
                     }
                 ],
                 "requestBody": {
+                    "description": "Ticket data to be updated",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -428,39 +625,49 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TicketResource"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "The given data was invalid."
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
                                         },
-                                        "errors": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Unauthenticated."
+                                            "example": "Ticket updated successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "closed"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "test title"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "test description"
+                                                },
+                                                "userId": {
+                                                    "type": "string",
+                                                    "example": "67a35037e59d0043c407db77"
+                                                },
+                                                "updatedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-06 08:45:45"
+                                                },
+                                                "createdAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-02-06 08:22:18"
+                                                },
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "67a4713a61af4f3c6707050c"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -474,9 +681,121 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Ticket not found."
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 404
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "No query results for model [App\\\\Models\\\\Ticket] 67a1e91c72dcd8a4290695a2"
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 401
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Unauthenticated."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 422
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "The title field is required."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": "title"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 403
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "This action is unauthorized."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -534,15 +853,31 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "Ticket not found",
+                    "401": {
+                        "description": "Unauthorized",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Ticket not found."
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 401
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Unauthenticated."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -550,15 +885,63 @@
                             }
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
+                    "403": {
+                        "description": "Forbidden",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthenticated."
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 403
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "This action is unauthorized."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ticket not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 404
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "No query results for model [App\\\\Models\\\\Ticket] 67a237edaa76b4fa8d028774"
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -1010,7 +1393,11 @@
         "schemas": {
             "TicketCollection": {
                 "properties": {
-                    "items": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/TicketResource"
@@ -1065,6 +1452,10 @@
                         },
                         "type": "object",
                         "nullable": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Tickets retrieved successfully."
                     }
                 },
                 "type": "object"
@@ -1086,17 +1477,25 @@
                             "in_progress",
                             "closed"
                         ],
-                        "example": "open"
+                        "example": "in_progress"
                     },
-                    "created_at": {
+                    "userId": {
+                        "type": "string",
+                        "example": "67a35037e59d0043c407db77"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Temporibus esse atque sed dolorem. Et tempora ut dolores tempore animi aliquam porro. Maxime et fugit numquam aliquam."
+                    },
+                    "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2025-02-04 12:00"
+                        "example": "2025-02-05 11:49:12"
                     },
-                    "updated_at": {
+                    "updatedAt": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2025-02-04 12:00"
+                        "example": "2025-02-05 11:49:12"
                     }
                 },
                 "type": "object"
