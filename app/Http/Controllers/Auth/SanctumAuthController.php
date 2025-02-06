@@ -74,7 +74,25 @@ class SanctumAuthController extends BaseController
      *                 )
      *             )
      *         )
-     *     )
+     *     ),
+     *
+     *     @OA\Response(
+     *          response=429,
+     *          description="Too Many Attempts",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="errors", type="array",
+     *
+     *                  @OA\Items(
+     *
+     *                      @OA\Property(property="status", type="integer", example=429),
+     *                      @OA\Property(property="message", type="string", example="Too Many Attempts."),
+     *                      @OA\Property(property="source", type="string", example="")
+     *                  )
+     *              )
+     *          )
+     *      )
      * )
      */
     public function register(AuthRegisterRequest $request): JsonResponse
@@ -153,7 +171,25 @@ class SanctumAuthController extends BaseController
      *                 )
      *             )
      *         )
-     *     )
+     *     ),
+     *
+     *     @OA\Response(
+     *          response=429,
+     *          description="Too Many Attempts",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="errors", type="array",
+     *
+     *                  @OA\Items(
+     *
+     *                      @OA\Property(property="status", type="integer", example=429),
+     *                      @OA\Property(property="message", type="string", example="Too Many Attempts."),
+     *                      @OA\Property(property="source", type="string", example="")
+     *                  )
+     *              )
+     *          )
+     *      )
      * )
      *
      * @throws ValidationException
@@ -223,7 +259,25 @@ class SanctumAuthController extends BaseController
      *                 )
      *             )
      *         )
-     *     )
+     *     ),
+     *
+     *     @OA\Response(
+     *          response=429,
+     *          description="Too Many Attempts",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="errors", type="array",
+     *
+     *                  @OA\Items(
+     *
+     *                      @OA\Property(property="status", type="integer", example=429),
+     *                      @OA\Property(property="message", type="string", example="Too Many Attempts."),
+     *                      @OA\Property(property="source", type="string", example="")
+     *                  )
+     *              )
+     *          )
+     *      )
      * )
      */
     public function logout(Request $request): JsonResponse

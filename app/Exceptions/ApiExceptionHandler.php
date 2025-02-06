@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use App\Traits\ApiResponses;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -37,6 +38,10 @@ class ApiExceptionHandler
 
         if ($e instanceof AccessDeniedHttpException) {
             return $this->handleAccessDeniedHttpException($e);
+        }
+
+        if ($e instanceof ThrottleRequestsException) {
+            return $this->handleThrottleRequestsException($e);
         }
 
         return $this->handleGenericException($e);
@@ -100,6 +105,17 @@ class ApiExceptionHandler
                 'source' => '',
             ],
         ], Response::HTTP_FORBIDDEN);
+    }
+
+    protected function handleThrottleRequestsException(ThrottleRequestsException $e): JsonResponse
+    {
+        return $this->error([
+            [
+                'status' => Response::HTTP_TOO_MANY_REQUESTS,
+                'message' => empty($e->getMessage()) ? 'Too Many Attempts.' : $e->getMessage(),
+                'source' => '',
+            ],
+        ], Response::HTTP_TOO_MANY_REQUESTS);
     }
 
     protected function handleGenericException(Throwable $e): JsonResponse

@@ -171,7 +171,25 @@ class TicketController extends BaseController
      *                 )
      *             )
      *         )
-     *     )
+     *     ),
+     *
+     *     @OA\Response(
+     *          response=429,
+     *          description="Too Many Attempts",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="errors", type="array",
+     *
+     *                  @OA\Items(
+     *
+     *                      @OA\Property(property="status", type="integer", example=429),
+     *                      @OA\Property(property="message", type="string", example="Too Many Attempts."),
+     *                      @OA\Property(property="source", type="string", example="")
+     *                  )
+     *              )
+     *          )
+     *      )
      * )
      */
     public function index(TicketIndexRequest $request): JsonResponse
@@ -275,7 +293,25 @@ class TicketController extends BaseController
      *                 )
      *             )
      *         )
-     *     )
+     *     ),
+     *
+     *     @OA\Response(
+     *          response=429,
+     *          description="Too Many Attempts",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="errors", type="array",
+     *
+     *                  @OA\Items(
+     *
+     *                      @OA\Property(property="status", type="integer", example=429),
+     *                      @OA\Property(property="message", type="string", example="Too Many Attempts."),
+     *                      @OA\Property(property="source", type="string", example="")
+     *                  )
+     *              )
+     *          )
+     *      )
      * )
      */
     public function store(TicketStoreRequest $request): JsonResponse
@@ -381,7 +417,25 @@ class TicketController extends BaseController
      *                 )
      *             )
      *         )
-     *     )
+     *     ),
+     *
+     *     @OA\Response(
+     *          response=429,
+     *          description="Too Many Attempts",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="errors", type="array",
+     *
+     *                  @OA\Items(
+     *
+     *                      @OA\Property(property="status", type="integer", example=429),
+     *                      @OA\Property(property="message", type="string", example="Too Many Attempts."),
+     *                      @OA\Property(property="source", type="string", example="")
+     *                  )
+     *              )
+     *          )
+     *      )
      * )
      */
     public function show(Ticket $ticket): JsonResponse
@@ -534,7 +588,25 @@ class TicketController extends BaseController
      *                 )
      *             )
      *         )
-     *     )
+     *     ),
+     *
+     *     @OA\Response(
+     *          response=429,
+     *          description="Too Many Attempts",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="errors", type="array",
+     *
+     *                  @OA\Items(
+     *
+     *                      @OA\Property(property="status", type="integer", example=429),
+     *                      @OA\Property(property="message", type="string", example="Too Many Attempts."),
+     *                      @OA\Property(property="source", type="string", example="")
+     *                  )
+     *              )
+     *          )
+     *      )
      * )
      */
     public function update(TicketUpdateRequest $request, Ticket $ticket): JsonResponse
@@ -636,7 +708,25 @@ class TicketController extends BaseController
      *                 )
      *             )
      *         )
-     *     )
+     *     ),
+     *
+     *     @OA\Response(
+     *          response=429,
+     *          description="Too Many Attempts",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="errors", type="array",
+     *
+     *                  @OA\Items(
+     *
+     *                      @OA\Property(property="status", type="integer", example=429),
+     *                      @OA\Property(property="message", type="string", example="Too Many Attempts."),
+     *                      @OA\Property(property="source", type="string", example="")
+     *                  )
+     *              )
+     *          )
+     *      )
      * )
      */
     public function destroy(Ticket $ticket): JsonResponse

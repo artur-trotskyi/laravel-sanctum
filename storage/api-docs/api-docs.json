@@ -212,6 +212,38 @@
                                 }
                             }
                         }
+                    },
+                    "429": {
+                        "description": "Too Many Attempts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 429
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Too Many Attempts."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -365,6 +397,38 @@
                                                     "message": {
                                                         "type": "string",
                                                         "example": "Unauthenticated."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Attempts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 429
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Too Many Attempts."
                                                     },
                                                     "source": {
                                                         "type": "string",
@@ -544,6 +608,38 @@
                                                     "message": {
                                                         "type": "string",
                                                         "example": "No query results for model [App\\\\Models\\\\Ticket] 67a1e91c72dcd8a4290695a6"
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Attempts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 429
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Too Many Attempts."
                                                     },
                                                     "source": {
                                                         "type": "string",
@@ -802,6 +898,38 @@
                                 }
                             }
                         }
+                    },
+                    "429": {
+                        "description": "Too Many Attempts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 429
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Too Many Attempts."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -934,6 +1062,38 @@
                                                     "message": {
                                                         "type": "string",
                                                         "example": "No query results for model [App\\\\Models\\\\Ticket] 67a237edaa76b4fa8d028774"
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Attempts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 429
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Too Many Attempts."
                                                     },
                                                     "source": {
                                                         "type": "string",
@@ -1093,6 +1253,38 @@
                                 }
                             }
                         }
+                    },
+                    "429": {
+                        "description": "Too Many Attempts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 429
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Too Many Attempts."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1223,6 +1415,38 @@
                                 }
                             }
                         }
+                    },
+                    "429": {
+                        "description": "Too Many Attempts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 429
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Too Many Attempts."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1276,6 +1500,38 @@
                                                     "message": {
                                                         "type": "string",
                                                         "example": "Unauthenticated."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Attempts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 429
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "Too Many Attempts."
                                                     },
                                                     "source": {
                                                         "type": "string",
