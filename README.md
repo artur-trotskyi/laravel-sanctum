@@ -9,18 +9,18 @@
 Clone this repository:
 
 ```
-git clone <repo-url>
+git clone <rocket9-laravel-repo-url>
 ```
 
 Clone the Docker Compose repository:
 
 ```
-git clone <docker-compose-repo-url>
+git clone <rocket9-laravel-docker-compose-repo-url>
 ```
 
 ### 2. Start Containers
 
-Navigate to the `rocket9-docker-compose` folder and start the containers in the background:
+Navigate to the `rocket9-laravel-docker-compose` folder and start the containers in the background:
 
 ```
 docker compose up -d
@@ -80,7 +80,7 @@ chmod -R 777 storage
 php artisan migrate:fresh --seed
 ```
 
-### 10. Configure Hosts File
+### 10. Configure Hosts File on Host Machine
 
 Open `/etc/hosts`:
 
@@ -91,7 +91,7 @@ sudo nano /etc/hosts
 Add the following line:
 
 ```
-127.0.0.1   rocket9.local
+127.0.0.1   rocket9-laravel.local
 ```
 
 ### 11. Access API Documentation
@@ -99,5 +99,9 @@ Add the following line:
 You can now use the API documentation. See the [`api-docs.json`](storage/api-docs/api-docs.json) file and start testing
 API requests.
 Swagger UI will be available at http://your-api-project.test/api/documentation. Replace your-api-project.test with your
-local development domain http://rocket9.local/api/documentation . 🚀
+local development domain http://rocket9-laravel.local/api/documentation . 🚀
 
+### 12. Change HTTP Port if Needed
+
+If port 80 is already in use (e.g., by a frontend application), you can change the HTTP port
+HOST_MACHINE_UNSECURE_HOST_PORT in the .env file in the rocket9-laravel-docker-compose folder
