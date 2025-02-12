@@ -968,8 +968,8 @@
                                             "example": true
                                         },
                                         "data": {
-                                            "type": "object",
-                                            "example": []
+                                            "type": "array",
+                                            "items": {}
                                         },
                                         "message": {
                                             "type": "string",
@@ -1061,7 +1061,7 @@
                                                     },
                                                     "message": {
                                                         "type": "string",
-                                                        "example": "No query results for model [App\\\\Models\\\\Ticket] 67a237edaa76b4fa8d028774"
+                                                        "example": "No query results for model [App\\\\Models\\\\Ticket] 67a35038e59d0043c407db9a"
                                                     },
                                                     "source": {
                                                         "type": "string",

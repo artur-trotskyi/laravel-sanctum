@@ -105,3 +105,16 @@ local development domain http://rocket9-laravel.local/api/documentation . 🚀
 
 If port 80 is already in use (e.g., by a frontend application), you can change the HTTP port
 HOST_MACHINE_UNSECURE_HOST_PORT in the .env file in the rocket9-laravel-docker-compose folder
+
+### 13. Other commands
+```
+docker compose stop
+docker compose start
+docker compose down
+docker compose up -d
+docker compose exec vue bash
+docker compose build --no-cache
+-------------------------
+./vendor/bin/pint
+php artisan l5-swagger:generate
+```

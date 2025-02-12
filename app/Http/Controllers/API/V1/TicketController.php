@@ -642,10 +642,9 @@ class TicketController extends BaseController
      *         description="Ticket deleted successfully.",
      *
      *         @OA\JsonContent(
-     *             type="object",
      *
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="data", type="object", example={}),
+     *             @OA\Property(property="data", type="array", @OA\Items()),
      *             @OA\Property(property="message", type="string", example="Ticket deleted successfully.")
      *         )
      *     ),
@@ -655,12 +654,10 @@ class TicketController extends BaseController
      *         description="Unauthorized",
      *
      *         @OA\JsonContent(
-     *             type="object",
      *
      *             @OA\Property(property="errors", type="array",
      *
      *                 @OA\Items(
-     *                     type="object",
      *
      *                     @OA\Property(property="status", type="integer", example=401),
      *                     @OA\Property(property="message", type="string", example="Unauthenticated."),
@@ -675,12 +672,10 @@ class TicketController extends BaseController
      *         description="Forbidden",
      *
      *         @OA\JsonContent(
-     *             type="object",
      *
      *             @OA\Property(property="errors", type="array",
      *
      *                 @OA\Items(
-     *                     type="object",
      *
      *                     @OA\Property(property="status", type="integer", example=403),
      *                     @OA\Property(property="message", type="string", example="This action is unauthorized."),
@@ -695,15 +690,13 @@ class TicketController extends BaseController
      *         description="Ticket not found",
      *
      *         @OA\JsonContent(
-     *             type="object",
      *
      *             @OA\Property(property="errors", type="array",
      *
      *                 @OA\Items(
-     *                     type="object",
      *
      *                     @OA\Property(property="status", type="integer", example=404),
-     *                     @OA\Property(property="message", type="string", example="No query results for model [App\\Models\\Ticket] 67a237edaa76b4fa8d028774"),
+     *                     @OA\Property(property="message", type="string", example="No query results for model [App\\Models\\Ticket] 67a35038e59d0043c407db9a"),
      *                     @OA\Property(property="source", type="string", example="")
      *                 )
      *             )
