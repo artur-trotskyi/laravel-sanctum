@@ -27,13 +27,13 @@ class TicketRepository extends BaseRepository
         $query = $this->model;
 
         if (isset($dto->status)) {
-            $query->where('status', $dto->status);
+            $query = $query->where('status', $dto->status);
         }
         if (isset($dto->title)) {
-            $query->where('title', 'like', "%{$dto->title}%");
+            $query = $query->where('title', 'like', "%{$dto->title}%");
         }
 
-        $query->orderBy($dto->sort_by, $dto->sort_order);
+        $query = $query->orderBy($dto->sort_by, $dto->sort_order);
 
         return $query->paginate($dto->per_page, ['*'], 'page', $dto->page);
     }
