@@ -12,7 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10",
         "mongodb/laravel-mongodb": "^5.1",
-        "predis/predis": "^2.0",
+        "predis/predis": "^2.3",
         "ext-mongodb": "*"
     },
     "require-dev": {

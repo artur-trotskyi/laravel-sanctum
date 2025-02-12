@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Gate;
 /**
  * @OA\Info(
  *     title="API Documentation",
- *     description="Detailed documentation of the Rocket9 API",
+ *     description="Detailed documentation of the Laravel Sanctum API",
  *     version="1.0.0",
  * )
  */

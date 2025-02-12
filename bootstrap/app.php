@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             TransformApiRequestMiddleware::class,
             TransformApiResponseMiddleware::class,
         ]);
+        $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions) use ($exceptionHandler) {
         $exceptions->renderable(function (Throwable $e, Request $request) use ($exceptionHandler) {

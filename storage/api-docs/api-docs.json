@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "API Documentation",
-        "description": "Detailed documentation of the Rocket9 API",
+        "description": "Detailed documentation of the Laravel Sanctum API",
         "version": "1.0.0"
     },
     "paths": {
