@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Ability\AbilityEnum;
 use App\Http\Controllers\API\V1\BaseController;
 use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Requests\Auth\AuthRegisterRequest;
@@ -106,7 +107,10 @@ class SanctumAuthController extends BaseController
         $user->updatedAt = $user->updated_at->toDateTime()->format('Y-m-d H:i:s');
 
         $data = [
-            'token' => $user->createToken(config('app.name'))->plainTextToken,
+            'token' => $user->createToken(
+                config('app.name'),
+                [AbilityEnum::MANAGE_ENTITIES_FULL_ACCESS->value]
+            )->plainTextToken,
             'user' => $user,
         ];
 

@@ -7,6 +7,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\Http\Middleware\CheckAbilities;
+use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 
 $exceptionHandler = new ApiExceptionHandler;
 
@@ -23,6 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
             TransformApiResponseMiddleware::class,
         ]);
         $middleware->statefulApi();
+        $middleware->alias([
+            'abilities' => CheckAbilities::class,
+            'ability' => CheckForAnyAbility::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) use ($exceptionHandler) {
         $exceptions->renderable(function (Throwable $e, Request $request) use ($exceptionHandler) {
