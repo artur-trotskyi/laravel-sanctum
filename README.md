@@ -121,4 +121,7 @@ docker compose build --no-cache
 -------------------------
 ./vendor/bin/pint
 php artisan l5-swagger:generate
+
+Using --hours=0.01 removes tokens that expired less than a minute ago
+php artisan sanctum:prune-expired --hours=0.01
 ```
