@@ -155,6 +155,25 @@ class TicketController extends BaseController
      *     ),
      *
      *     @OA\Response(
+     *          response=403,
+     *          description="Forbidden",
+     *
+     *          @OA\JsonContent(
+     *              type="object",
+     *
+     *              @OA\Property(property="errors", type="array",
+     *
+     *                  @OA\Items(
+     *
+     *                      @OA\Property(property="status", type="integer", example=403),
+     *                      @OA\Property(property="message", type="string", example="This action is unauthorized."),
+     *                      @OA\Property(property="source", type="string", example="")
+     *                  )
+     *              )
+     *          )
+     *      ),
+     *
+     *     @OA\Response(
      *         response=422,
      *         description="Validation Error",
      *

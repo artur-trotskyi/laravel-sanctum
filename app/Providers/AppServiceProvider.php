@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\Ability\AbilityEnum;
 use App\Models\PersonalAccessToken;
 use App\Models\Ticket;
 use App\Policies\TicketPolicy;
@@ -25,6 +26,27 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Ticket::class, TicketPolicy::class);
+        $this->overrideSanctumConfigurationToSupportRefreshToken();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+    }
+
+    private function overrideSanctumConfigurationToSupportRefreshToken(): void
+    {
+        Sanctum::$accessTokenAuthenticationCallback = function ($accessToken, $isValid) {
+            $abilities = collect($accessToken->abilities);
+            if (! empty($abilities) && $abilities[0] === AbilityEnum::ISSUE_ACCESS_TOKEN->value) {
+                return $accessToken->expires_at && $accessToken->expires_at->isFuture();
+            }
+
+            return $isValid;
+        };
+
+        Sanctum::$accessTokenRetrievalCallback = function ($request) {
+            if (! $request->routeIs('auth.refresh')) {
+                return str_replace('Bearer ', '', $request->headers->get('Authorization'));
+            }
+
+            return $request->cookie('refreshToken') ?? '';
+        };
     }
 }

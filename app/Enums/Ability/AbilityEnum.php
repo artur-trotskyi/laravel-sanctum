@@ -4,5 +4,6 @@ namespace App\Enums\Ability;
 
 enum AbilityEnum: string
 {
-    case MANAGE_ENTITIES_FULL_ACCESS = 'manage-entities';
+    case ISSUE_ACCESS_TOKEN = 'issue-access-token';
+    case ACCESS_API = 'access-api';
 }

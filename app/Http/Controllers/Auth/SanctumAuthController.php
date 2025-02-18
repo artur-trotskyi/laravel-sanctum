@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Enums\Ability\AbilityEnum;
 use App\Http\Controllers\API\V1\BaseController;
 use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Requests\Auth\AuthRegisterRequest;
 use App\Models\User;
+use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +15,12 @@ use Illuminate\Validation\ValidationException;
 
 class SanctumAuthController extends BaseController
 {
+    public function __construct(
+        private readonly AuthService $service
+    ) {
+        //
+    }
+
     /**
      * Register a new user and create a Sanctum token.
      */
@@ -28,7 +34,7 @@ class SanctumAuthController extends BaseController
      *         required=true,
      *
      *         @OA\JsonContent(
-     *             required={"name", "email", "password"},
+     *             required={"name", "email", "password", "password_confirmation"},
      *
      *             @OA\Property(property="name", type="string", example="John Doe"),
      *             @OA\Property(property="email", type="string", format="email", example="john.doe@example.com"),
@@ -45,14 +51,14 @@ class SanctumAuthController extends BaseController
      *
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="token", type="string", example="67a313ecb48232f83a02ce83|9k6gGrxJZRfAVsbNfMYOTGKZUKjBwWHDYC4nLEVS5106eb6d"),
+     *                 @OA\Property(property="accessToken", type="string", example="67b44704b7dabb5ccd037c10|JaAcoNkoMkW4debCEaVTOtqyS1ycHp7ZWroq15RY97ea1576"),
      *                 @OA\Property(property="user", type="object",
-     *                     @OA\Property(property="name", type="string", example="John Doe"),
-     *                     @OA\Property(property="email", type="string", example="john.doe@example.com"),
+     *                     @OA\Property(property="name", type="string", example="test"),
+     *                     @OA\Property(property="email", type="string", example="test18@example.com"),
      *                     @OA\Property(property="emailVerifiedAt", type="string", format="date-time", example=null),
-     *                     @OA\Property(property="updatedAt", type="string", format="date-time", example="2025-02-05 06:56:23"),
-     *                     @OA\Property(property="createdAt", type="string", format="date-time", example="2025-02-05 06:56:23"),
-     *                     @OA\Property(property="id", type="string", example="67a30b97677e1eb7ed0b0c67")
+     *                     @OA\Property(property="updatedAt", type="string", format="date-time", example="2025-02-18 08:38:28"),
+     *                     @OA\Property(property="createdAt", type="string", format="date-time", example="2025-02-18 08:38:28"),
+     *                     @OA\Property(property="id", type="string", example="67b44704b7dabb5ccd037c0f")
      *                 )
      *             ),
      *             @OA\Property(property="message", type="string", example="User register successfully.")
@@ -106,15 +112,15 @@ class SanctumAuthController extends BaseController
         $user->createdAt = $user->created_at->toDateTime()->format('Y-m-d H:i:s');
         $user->updatedAt = $user->updated_at->toDateTime()->format('Y-m-d H:i:s');
 
+        $tokens = $this->service->generateTokens($user);
+        $rtExpireTime = config('sanctum.rt_expiration');
+        $cookie = cookie('refreshToken', $tokens['refreshToken'], $rtExpireTime, secure: true);
         $data = [
-            'token' => $user->createToken(
-                config('app.name'),
-                [AbilityEnum::MANAGE_ENTITIES_FULL_ACCESS->value]
-            )->plainTextToken,
+            'accessToken' => $tokens['accessToken'],
             'user' => $user,
         ];
 
-        return $this->sendResponse($data, 'User register successfully.');
+        return $this->sendResponse($data, 'User register successfully.')->withCookie($cookie);
     }
 
     /**
@@ -145,14 +151,14 @@ class SanctumAuthController extends BaseController
      *
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="token", type="string", example="67a32a7bc069417b6e095fd3|mPepplrajIRB22DLJBH6ccphvMItt0lLSpq6Kcr9b5de3abf"),
+     *                 @OA\Property(property="accessToken", type="string", example="67b443f25ddf821592094e98|plXajuOvCw8jUbdPcXOXJZiEn4wA7wCefpkLgHsJda024c70"),
      *                 @OA\Property(property="user", type="object",
      *                     @OA\Property(property="name", type="string", example="Admin"),
      *                     @OA\Property(property="email", type="string", example="admin@example.com"),
-     *                     @OA\Property(property="emailVerifiedAt", type="string", format="date-time", example="2025-02-05 06:56:23"),
-     *                     @OA\Property(property="updatedAt", type="string", format="date-time", example="2025-02-05 06:56:23"),
-     *                     @OA\Property(property="createdAt", type="string", format="date-time", example="2025-02-05 06:56:23"),
-     *                     @OA\Property(property="id", type="string", example="67a30b97677e1eb7ed0b0c67")
+     *                     @OA\Property(property="emailVerifiedAt", type="string", format="date-time", example="2025-02-13 12:36:35"),
+     *                     @OA\Property(property="updatedAt", type="string", format="date-time", example="2025-02-13 12:36:35"),
+     *                     @OA\Property(property="createdAt", type="string", format="date-time", example="2025-02-13 12:36:35"),
+     *                     @OA\Property(property="id", type="string", example="67ade753c3f4971059007e97")
      *                 )
      *             ),
      *             @OA\Property(property="message", type="string", example="User login successfully.")
@@ -178,22 +184,22 @@ class SanctumAuthController extends BaseController
      *     ),
      *
      *     @OA\Response(
-     *          response=429,
-     *          description="Too Many Attempts",
+     *         response=429,
+     *         description="Too Many Attempts",
      *
-     *          @OA\JsonContent(
+     *         @OA\JsonContent(
      *
-     *              @OA\Property(property="errors", type="array",
+     *             @OA\Property(property="errors", type="array",
      *
-     *                  @OA\Items(
+     *                 @OA\Items(
      *
-     *                      @OA\Property(property="status", type="integer", example=429),
-     *                      @OA\Property(property="message", type="string", example="Too Many Attempts."),
-     *                      @OA\Property(property="source", type="string", example="")
-     *                  )
-     *              )
-     *          )
-     *      )
+     *                     @OA\Property(property="status", type="integer", example=429),
+     *                     @OA\Property(property="message", type="string", example="Too Many Attempts."),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
+     *         )
+     *     )
      * )
      *
      * @throws ValidationException
@@ -217,12 +223,17 @@ class SanctumAuthController extends BaseController
         }
 
         $user = Auth::guard('sanctum')->user();
+        $tokens = $this->service->generateTokens($user);
+
+        $rtExpireTime = config('sanctum.rt_expiration');
+        $cookie = cookie('refreshToken', $tokens['refreshToken'], $rtExpireTime, secure: true);
+
         $data = [
-            'token' => $user->createToken(config('app.name'))->plainTextToken,
+            'accessToken' => $tokens['accessToken'],
             'user' => $user,
         ];
 
-        return $this->sendResponse($data, 'User login successfully.');
+        return $this->sendResponse($data, 'User login successfully.')->withCookie($cookie);
     }
 
     /**
@@ -288,7 +299,9 @@ class SanctumAuthController extends BaseController
     {
         Auth::guard('sanctum')->user()?->tokens()->delete();
 
-        return $this->sendResponse([], 'You are logged out.');
+        $cookie = cookie()->forget('refreshToken');
+
+        return $this->sendResponse([], 'You are logged out.')->withCookie($cookie);
     }
 
     /**
@@ -341,5 +354,72 @@ class SanctumAuthController extends BaseController
         ];
 
         return $this->sendResponse($userData, 'Data retrieved successfully.');
+    }
+
+    /**
+     * Refresh access token.
+     */
+    /**
+     * @OA\Post(
+     *     path="/api/auth/refresh-token",
+     *     summary="Refresh access token",
+     *     tags={"Auth"},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\JsonContent(
+     *             required={},
+     *             type="object",
+     *             example={}
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Access token refreshed successfully",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="accessToken", type="string", example="67b44b44fdfe254315079401|PRStJVgVkcLnhgXx92WG9em89DR0xqJoUh9hFjAc0ff5535a")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Refresh access token successfully.")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *
+     *                     @OA\Property(property="status", type="integer", example=401),
+     *                     @OA\Property(property="message", type="string", example="Unauthenticated."),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function refresh(Request $request): JsonResponse
+    {
+        $user = Auth::guard('sanctum')->user();
+        $request->user()->tokens()->delete();
+        $tokens = $this->service->generateTokens($user);
+
+        $rtExpireTime = config('sanctum.rt_expiration');
+        $cookie = cookie('refreshToken', $tokens['refreshToken'], $rtExpireTime, secure: true);
+        $data = [
+            'accessToken' => $tokens['accessToken'],
+        ];
+
+        return $this->sendResponse($data, 'Refresh access token successfully.')->withCookie($cookie);
     }
 }
