@@ -1255,6 +1255,38 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "User is already authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 403
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "You are already authenticated."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
                     "422": {
                         "description": "Validation error",
                         "content": {
@@ -1410,6 +1442,38 @@
                                         "message": {
                                             "type": "string",
                                             "example": "User login successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User is already authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 403
+                                                    },
+                                                    "message": {
+                                                        "type": "string",
+                                                        "example": "You are already authenticated."
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "example": ""
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"

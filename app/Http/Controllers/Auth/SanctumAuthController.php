@@ -66,6 +66,24 @@ class SanctumAuthController extends BaseController
      *     ),
      *
      *     @OA\Response(
+     *         response=403,
+     *         description="User is already authenticated",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *
+     *                      @OA\Property(property="status", type="integer", example=403),
+     *                      @OA\Property(property="message", type="string", example="You are already authenticated."),
+     *                      @OA\Property(property="source", type="string", example="")
+     *                  )
+     *              )
+     *          )
+     *      ),
+     *
+     *     @OA\Response(
      *         response=422,
      *         description="Validation error",
      *
@@ -106,7 +124,6 @@ class SanctumAuthController extends BaseController
     {
         $registerValidatedData = $request->validated();
         $user = User::create($registerValidatedData);
-        Auth::login($user);
 
         // TODO: fix it
         $user->createdAt = $user->created_at->toDateTime()->format('Y-m-d H:i:s');
@@ -162,6 +179,24 @@ class SanctumAuthController extends BaseController
      *                 )
      *             ),
      *             @OA\Property(property="message", type="string", example="User login successfully.")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=403,
+     *         description="User is already authenticated",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(property="errors", type="array",
+     *
+     *                 @OA\Items(
+     *
+     *                     @OA\Property(property="status", type="integer", example=403),
+     *                     @OA\Property(property="message", type="string", example="You are already authenticated."),
+     *                     @OA\Property(property="source", type="string", example="")
+     *                 )
+     *             )
      *         )
      *     ),
      *
