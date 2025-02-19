@@ -20,15 +20,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            'abilities' => CheckAbilities::class,
+            'ability' => CheckForAnyAbility::class,
+        ]);
         $middleware->appendToGroup('api', [
             TransformApiRequestMiddleware::class,
             TransformApiResponseMiddleware::class,
         ]);
         $middleware->statefulApi();
-        $middleware->alias([
-            'abilities' => CheckAbilities::class,
-            'ability' => CheckForAnyAbility::class,
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) use ($exceptionHandler) {
         $exceptions->renderable(function (Throwable $e, Request $request) use ($exceptionHandler) {

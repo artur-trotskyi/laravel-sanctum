@@ -1,6 +1,6 @@
 # LARAVEL SANCTUM
 
-**Technologies:** PHP 8.3, Laravel 11, MongoDB 7
+**Technologies:** PHP 8.3, Laravel 11, MySQL 8
 
 ## Initial Local Setup (Ubuntu)
 
@@ -28,11 +28,7 @@ docker compose up -d
 
 ### 3. Create the Database
 
-Create the `laravel_sanctum` database in MongoDB on host machine for the project.
-For example, in MongoDB Compass, use the credentials from the Docker Compose .env file:
-- MONGO_INITDB_ROOT_USERNAME=tiger  
-- MONGO_INITDB_ROOT_PASSWORD=secret  
-- HOST_MACHINE_MONGO_PORT=27017
+Create the `laravel_sanctum` database in MySQL on host machine for the project.
 
 ### 4. Access the Web Container
 
@@ -121,6 +117,8 @@ docker compose build --no-cache
 -------------------------
 ./vendor/bin/pint
 php artisan l5-swagger:generate
+php artisan test
+php artisan migrate:fresh --seed
 
 Using --hours=0.01 removes tokens that expired less than a minute ago
 php artisan sanctum:prune-expired --hours=0.01

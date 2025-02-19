@@ -20,7 +20,7 @@ class TicketFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::raw(fn ($collection) => $collection->aggregate([['$sample' => ['size' => 1]]]))->first()?->id ?? User::factory(),
+            'user_id' => User::query()->inRandomOrder()->value('id'),
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
             'status' => $this->faker->randomElement(TicketStatusEnum::cases()),

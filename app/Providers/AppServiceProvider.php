@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Enums\Ability\AbilityEnum;
+use App\Enums\Auth\TokenAbilityEnum;
 use App\Models\PersonalAccessToken;
 use App\Models\Ticket;
 use App\Policies\TicketPolicy;
@@ -27,17 +27,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::policy(Ticket::class, TicketPolicy::class);
         $this->overrideSanctumConfigurationToSupportRefreshToken();
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
         RedirectIfAuthenticated::redirectUsing(fn () => throw new AccessDeniedHttpException('You are already authenticated.'));
+
+        Gate::policy(Ticket::class, TicketPolicy::class);
     }
 
     private function overrideSanctumConfigurationToSupportRefreshToken(): void
     {
         Sanctum::$accessTokenAuthenticationCallback = function ($accessToken, $isValid) {
             $abilities = collect($accessToken->abilities);
-            if (! empty($abilities) && $abilities[0] === AbilityEnum::ISSUE_ACCESS_TOKEN->value) {
+            if (! empty($abilities) && $abilities[0] === TokenAbilityEnum::ISSUE_ACCESS_TOKEN->value) {
                 return $accessToken->expires_at && $accessToken->expires_at->isFuture();
             }
 

@@ -4,8 +4,8 @@ namespace App\Repositories;
 
 use App\Repositories\Interfaces\BaseInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\LazyCollection;
-use MongoDB\Laravel\Eloquent\Model;
 
 abstract class BaseRepository implements BaseInterface
 {

@@ -248,7 +248,7 @@ class TicketController extends BaseController
      *     ),
      *
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="Ticket created successfully.",
      *
      *         @OA\JsonContent(
@@ -262,10 +262,10 @@ class TicketController extends BaseController
      *                 @OA\Property(property="status", type="string", example="open"),
      *                 @OA\Property(property="title", type="string", example="test title"),
      *                 @OA\Property(property="description", type="string", example="test description"),
-     *                 @OA\Property(property="userId", type="string", example="67a35037e59d0043c407db77"),
+     *                 @OA\Property(property="userId", type="integer", example=1),
      *                 @OA\Property(property="updatedAt", type="string", format="date-time", example="2025-02-06 08:19:45"),
      *                 @OA\Property(property="createdAt", type="string", format="date-time", example="2025-02-06 08:19:45"),
-     *                 @OA\Property(property="id", type="string", example="67a470a1e1dd6b072d0bb2fe")
+     *                 @OA\Property(property="id", type="integer", example=24)
      *             )
      *         )
      *     ),
@@ -357,7 +357,7 @@ class TicketController extends BaseController
      *         required=true,
      *         description="ID of the ticket to retrieve",
      *
-     *         @OA\Schema(type="string", example="67a1e91c72dcd8a4290695a6")
+     *         @OA\Schema(type="integer", example=24)
      *     ),
      *
      *     @OA\Response(
@@ -370,12 +370,12 @@ class TicketController extends BaseController
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="data", type="object",
      *                 @OA\Property(property="status", type="string", example="in_progress"),
-     *                 @OA\Property(property="userId", type="string", example="67a35037e59d0043c407db77"),
+     *                 @OA\Property(property="userId", type="integer", example=1),
      *                 @OA\Property(property="title", type="string", example="Id suscipit aut a."),
      *                 @OA\Property(property="description", type="string", example="Temporibus esse atque sed dolorem. Et tempora ut dolores tempore animi aliquam porro. Maxime et fugit numquam aliquam."),
      *                 @OA\Property(property="updatedAt", type="string", format="datetime", example="2025-02-05 11:49:12"),
      *                 @OA\Property(property="createdAt", type="string", format="datetime", example="2025-02-05 11:49:12"),
-     *                 @OA\Property(property="id", type="string", example="67a35038e59d0043c407dba0")
+     *                 @OA\Property(property="id", type="integer", example=24)
      *             ),
      *             @OA\Property(property="message", type="string", example="Ticket retrieved successfully.")
      *         )
@@ -485,7 +485,7 @@ class TicketController extends BaseController
      *         required=true,
      *         description="ID of the ticket to update",
      *
-     *         @OA\Schema(type="string", example="67a1e91c72dcd8a4290695a6")
+     *         @OA\Schema(type="integer", example=24)
      *     ),
      *
      *     @OA\RequestBody(
@@ -521,10 +521,10 @@ class TicketController extends BaseController
      *                 @OA\Property(property="status", type="string", example="closed"),
      *                 @OA\Property(property="title", type="string", example="test title"),
      *                 @OA\Property(property="description", type="string", example="test description"),
-     *                 @OA\Property(property="userId", type="string", example="67a35037e59d0043c407db77"),
+     *                 @OA\Property(property="userId", type="integer", example=1),
      *                 @OA\Property(property="updatedAt", type="string", format="date-time", example="2025-02-06 08:45:45"),
      *                 @OA\Property(property="createdAt", type="string", format="date-time", example="2025-02-06 08:22:18"),
-     *                 @OA\Property(property="id", type="string", example="67a4713a61af4f3c6707050c")
+     *                 @OA\Property(property="id", type="integer", example=24)
      *             )
      *         )
      *     ),
@@ -653,7 +653,7 @@ class TicketController extends BaseController
      *         required=true,
      *         description="ID of the ticket to delete",
      *
-     *         @OA\Schema(type="string", example="67a1e91c72dcd8a4290695a6")
+     *         @OA\Schema(type="integer", example=24)
      *     ),
      *
      *     @OA\Response(

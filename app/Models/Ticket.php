@@ -5,10 +5,9 @@ namespace App\Models;
 use App\Casts\DateTimeCast;
 use App\Enums\Ticket\TicketStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use MongoDB\Laravel\Eloquent\Model;
-use MongoDB\Laravel\Eloquent\SoftDeletes;
-use MongoDB\Laravel\Relations\BelongsTo as MongoBelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ticket extends Model
 {
@@ -71,7 +70,7 @@ class Ticket extends Model
         });
     }
 
-    public function user(): BelongsTo|MongoBelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

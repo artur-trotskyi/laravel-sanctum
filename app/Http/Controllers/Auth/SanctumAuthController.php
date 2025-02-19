@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Auth\TokenAbilityEnum;
 use App\Http\Controllers\API\V1\BaseController;
 use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Requests\Auth\AuthRegisterRequest;
@@ -9,16 +10,31 @@ use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-class SanctumAuthController extends BaseController
+class SanctumAuthController extends BaseController implements HasMiddleware
 {
     public function __construct(
-        private readonly AuthService $service
+        private readonly AuthService $authService
     ) {
         //
+    }
+
+    /**
+     * Get the middleware that should be assigned to the controller.
+     */
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum', only: ['logout', 'refresh', 'me']),
+            new Middleware('guest:sanctum', only: ['register', 'login']),
+            new Middleware('ability:'.TokenAbilityEnum::ISSUE_ACCESS_TOKEN->value, only: ['refresh']),
+            new Middleware('ability:'.TokenAbilityEnum::ACCESS_API->value, only: ['me']),
+        ];
     }
 
     /**
@@ -58,7 +74,7 @@ class SanctumAuthController extends BaseController
      *                     @OA\Property(property="emailVerifiedAt", type="string", format="date-time", example=null),
      *                     @OA\Property(property="updatedAt", type="string", format="date-time", example="2025-02-18 08:38:28"),
      *                     @OA\Property(property="createdAt", type="string", format="date-time", example="2025-02-18 08:38:28"),
-     *                     @OA\Property(property="id", type="string", example="67b44704b7dabb5ccd037c0f")
+     *                     @OA\Property(property="id", type="integer", example=5)
      *                 )
      *             ),
      *             @OA\Property(property="message", type="string", example="User register successfully.")
@@ -125,13 +141,9 @@ class SanctumAuthController extends BaseController
         $registerValidatedData = $request->validated();
         $user = User::create($registerValidatedData);
 
-        // TODO: fix it
-        $user->createdAt = $user->created_at->toDateTime()->format('Y-m-d H:i:s');
-        $user->updatedAt = $user->updated_at->toDateTime()->format('Y-m-d H:i:s');
+        $tokens = $this->authService->generateTokens($user);
+        $cookie = $this->authService->generateRefreshTokenCookie($tokens['refreshToken']);
 
-        $tokens = $this->service->generateTokens($user);
-        $rtExpireTime = config('sanctum.rt_expiration');
-        $cookie = cookie('refreshToken', $tokens['refreshToken'], $rtExpireTime, secure: true);
         $data = [
             'accessToken' => $tokens['accessToken'],
             'user' => $user,
@@ -175,7 +187,7 @@ class SanctumAuthController extends BaseController
      *                     @OA\Property(property="emailVerifiedAt", type="string", format="date-time", example="2025-02-13 12:36:35"),
      *                     @OA\Property(property="updatedAt", type="string", format="date-time", example="2025-02-13 12:36:35"),
      *                     @OA\Property(property="createdAt", type="string", format="date-time", example="2025-02-13 12:36:35"),
-     *                     @OA\Property(property="id", type="string", example="67ade753c3f4971059007e97")
+     *                     @OA\Property(property="id", type="integer", example=5)
      *                 )
      *             ),
      *             @OA\Property(property="message", type="string", example="User login successfully.")
@@ -257,11 +269,9 @@ class SanctumAuthController extends BaseController
             }
         }
 
-        $user = Auth::guard('sanctum')->user();
-        $tokens = $this->service->generateTokens($user);
-
-        $rtExpireTime = config('sanctum.rt_expiration');
-        $cookie = cookie('refreshToken', $tokens['refreshToken'], $rtExpireTime, secure: true);
+        $user = Auth::user();
+        $tokens = $this->authService->generateTokens($user);
+        $cookie = $this->authService->generateRefreshTokenCookie($tokens['refreshToken']);
 
         $data = [
             'accessToken' => $tokens['accessToken'],
@@ -358,7 +368,7 @@ class SanctumAuthController extends BaseController
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="data", type="object",
      *                 @OA\Property(property="user", type="object",
-     *                     @OA\Property(property="id", type="string", example="67a30b97677e1eb7ed0b0c67"),
+     *                     @OA\Property(property="id", type="integer", example=5),
      *                     @OA\Property(property="name", type="string", example="John Doe"),
      *                     @OA\Property(property="email", type="string", example="john.doe@example.com"),
      *                     @OA\Property(property="emailVerifiedAt", type="string", format="date-time", example="2025-02-05 06:56:23"),
@@ -447,14 +457,13 @@ class SanctumAuthController extends BaseController
     {
         $user = Auth::guard('sanctum')->user();
         $request->user()->tokens()->delete();
-        $tokens = $this->service->generateTokens($user);
+        $tokens = $this->authService->generateTokens($user);
 
-        $rtExpireTime = config('sanctum.rt_expiration');
-        $cookie = cookie('refreshToken', $tokens['refreshToken'], $rtExpireTime, secure: true);
+        $cookie = $this->authService->generateRefreshTokenCookie($tokens['refreshToken']);
         $data = [
             'accessToken' => $tokens['accessToken'],
         ];
 
-        return $this->sendResponse($data, 'Refresh access token successfully.')->withCookie($cookie);
+        return $this->sendResponse($data, 'Access token refreshed successfully.')->withCookie($cookie);
     }
 }
