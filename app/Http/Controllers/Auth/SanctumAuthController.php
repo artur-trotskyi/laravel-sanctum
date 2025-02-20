@@ -60,7 +60,7 @@ class SanctumAuthController extends BaseController implements HasMiddleware
      *     ),
      *
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="User registered successfully",
      *
      *         @OA\JsonContent(
@@ -149,7 +149,7 @@ class SanctumAuthController extends BaseController implements HasMiddleware
             'user' => $user,
         ];
 
-        return $this->sendResponse($data, 'User register successfully.')->withCookie($cookie);
+        return $this->sendResponse($data, 'User register successfully.', 201)->withCookie($cookie);
     }
 
     /**
