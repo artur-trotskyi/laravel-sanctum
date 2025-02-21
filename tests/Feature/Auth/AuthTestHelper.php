@@ -3,15 +3,23 @@
 namespace Tests\Feature\Auth;
 
 use App\Enums\Auth\TokenAbilityEnum;
+use App\Models\Ticket;
 use App\Models\User;
 use App\Services\AuthService;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\PersonalAccessToken;
 
 readonly class AuthTestHelper
 {
-    public static function mockUser(): User
+    public static function mockUser(?int $count = null): Model|Collection
     {
-        return User::factory()->create();
+        return User::factory($count)->create();
+    }
+
+    public static function mockTicket(?int $count = null): Model|Collection
+    {
+        return Ticket::factory($count)->create();
     }
 
     public static function clearUser(User $userModel): void
