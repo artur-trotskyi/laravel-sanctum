@@ -532,4 +532,62 @@ class TicketControllerTest extends TestCase
             ],
         ]);
     }
+
+    public function test_can_retrieve_cached_tickets_and_then_refresh(): void
+    {
+        // Arrange: Create tickets and simulate a cache hit.
+        Ticket::factory()->count(10)->create(['title' => 'First Title']);
+
+        // First request to get the tickets (this will be cached).
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$this->tokens['accessToken'],
+        ])->getJson(route('tickets.index', ['page' => 1, 'per_page' => 5, 'sort_order' => 'asc', 'sort_by' => 'created_at']));
+
+        // Assert that the request was successful and we received the expected number of items.
+        $response->assertStatus(200);
+        $response->assertJsonCount(5, 'data.items');
+
+        // Assert that the response contains the old title from the cached tickets.
+        $response->assertJsonFragment([
+            'title' => 'First Title',
+        ]);
+
+        // Now, make a change to the database (update all tickets).
+        Ticket::query()->update(['title' => 'Second Title']);
+
+        // Second request — the cache should be used, and the data should not reflect the update yet.
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$this->tokens['accessToken'],
+        ])->getJson(route('tickets.index', ['page' => 1, 'per_page' => 5, 'sort_order' => 'asc', 'sort_by' => 'created_at']));
+
+        // Assert that the cached data is still being used and the data hasn't changed.
+        $response->assertStatus(200);
+        $response->assertJsonCount(5, 'data.items');
+
+        // Ensure that the response still contains the old (cached) title.
+        $response->assertJsonFragment([
+            'title' => 'First Title',
+        ]);
+
+        // Simulate cache expiration or refresh.
+        // You can either manually adjust the TTL or simulate cache clearing.
+        Cache::tags(['tickets'])->flush(); // Clear the cache.
+
+        // Make the same request again — now the cache should be missed, and the updated data should be returned.
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer '.$this->tokens['accessToken'],
+        ])->getJson(route('tickets.index', ['page' => 1, 'per_page' => 5, 'sort_order' => 'asc', 'sort_by' => 'created_at']));
+
+        // Assert that the updated data is now returned.
+        $response->assertStatus(200);
+        $response->assertJsonCount(5, 'data.items');
+
+        // Ensure the response contains the new title.
+        $response->assertJsonFragment([
+            'title' => 'Second Title',
+        ]);
+    }
 }
