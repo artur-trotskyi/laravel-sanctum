@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\ApiExceptionHandler;
+use App\Http\Middleware\HorizonBasicAuthMiddleware;
 use App\Http\Middleware\TransformApiRequestMiddleware;
 use App\Http\Middleware\TransformApiResponseMiddleware;
 use Illuminate\Foundation\Application;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'abilities' => CheckAbilities::class,
             'ability' => CheckForAnyAbility::class,
+            'horizonBasicAuth' => HorizonBasicAuthMiddleware::class,
         ]);
         $middleware->appendToGroup('api', [
             TransformApiRequestMiddleware::class,

@@ -80,7 +80,13 @@ chmod -R 777 storage
 php artisan migrate:fresh --seed
 ```
 
-### 10. Configure Hosts File on Host Machine
+### 10. Run Queue
+
+```
+php artisan horizon
+```
+
+### 11. Configure Hosts File on Host Machine
 
 Open `/etc/hosts`:
 
@@ -94,19 +100,25 @@ Add the following line:
 127.0.0.1   laravel-sanctum-vue.local
 ```
 
-### 11. Access API Documentation
+### 12. Access API Documentation
 
 You can now use the API documentation. See the [`api-docs.json`](storage/api-docs/api-docs.json) file and start testing
 API requests.
 Swagger UI will be available at http://your-api-project.test/api/documentation. Replace your-api-project.test with your
 local development domain http://laravel-sanctum-vue.local/api/documentation . 🚀
 
-### 12. Change HTTP Port if Needed
+### 13. Change HTTP Port if Needed
 
 If port 80 is already in use (e.g., by a frontend application), you can change the HTTP port
 HOST_MACHINE_UNSECURE_HOST_PORT in the .env file in the laravel-sanctum-docker-compose folder
 
-### 13. Other commands
+### 14. Monitor Queue Execution
+
+Visit /horizon in your browser to monitor the execution of queued jobs.
+
+In production environments, access to this page is protected by basic authentication. Use HORIZON_BASIC_AUTH_USERNAME and HORIZON_BASIC_AUTH_PASSWORD from the .env file to log in.
+
+### 15. Other commands
 ```
 docker compose stop
 docker compose start
@@ -119,6 +131,8 @@ docker compose build --no-cache
 php artisan l5-swagger:generate
 php artisan test
 php artisan migrate:fresh --seed
+php artisan horizon
+php artisan cache:clear - for cache reset, e.g. for jobs
 
 Using --hours=0.01 removes tokens that expired less than a minute ago
 php artisan sanctum:prune-expired --hours=0.01

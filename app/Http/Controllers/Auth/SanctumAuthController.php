@@ -6,6 +6,7 @@ use App\Enums\Auth\TokenAbilityEnum;
 use App\Http\Controllers\API\V1\BaseController;
 use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Requests\Auth\AuthRegisterRequest;
+use App\Jobs\LogJob;
 use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
@@ -277,6 +278,8 @@ class SanctumAuthController extends BaseController implements HasMiddleware
             'accessToken' => $tokens['accessToken'],
             'user' => $user,
         ];
+
+        LogJob::dispatch('User logged in', ['email' => $user->email]);
 
         return $this->sendResponse($data, 'User login successfully.')->withCookie($cookie);
     }
